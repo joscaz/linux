@@ -534,7 +534,7 @@ void perf_sample_event_took(u64 sample_len_ns)
 	__this_cpu_write(running_sample_length, running_len);
 
 	/*
-	 * Note: this will be biased artifically low until we have
+	 * Note: this will be biased artificially low until we have
 	 * seen NR_ACCUMULATED_SAMPLES. Doing it this way keeps us
 	 * from having to maintain a count.
 	 */
@@ -596,10 +596,10 @@ static inline u64 perf_event_clock(struct perf_event *event)
  *
  * Event groups make things a little more complicated, but not terribly so. The
  * rules for a group are that if the group leader is OFF the entire group is
- * OFF, irrespecive of what the group member states are. This results in
+ * OFF, irrespective of what the group member states are. This results in
  * __perf_effective_state().
  *
- * A futher ramification is that when a group leader flips between OFF and
+ * A further ramification is that when a group leader flips between OFF and
  * !OFF, we need to update all group member times.
  *
  *
@@ -891,7 +891,7 @@ static int perf_cgroup_ensure_storage(struct perf_event *event,
 	int cpu, heap_size, ret = 0;
 
 	/*
-	 * Allow storage to have sufficent space for an iterator for each
+	 * Allow storage to have sufficient space for an iterator for each
 	 * possibly nested cgroup plus an iterator for events with no cgroup.
 	 */
 	for (heap_size = 1; css; css = css->parent)
@@ -1303,7 +1303,7 @@ static void perf_event_ctx_unlock(struct perf_event *event,
 /*
  * This must be done under the ctx->lock, such as to serialize against
  * context_equiv(), therefore we cannot call put_ctx() since that might end up
- * calling scheduler related locks and ctx->lock nests inside those.
+ * calling scheduler-related locks and ctx->lock nests inside those.
  */
 static __must_check struct perf_event_context *
 unclone_ctx(struct perf_event_context *ctx)
@@ -1393,7 +1393,7 @@ retry:
 		 * getting freed.  Lock the context and check if it
 		 * got swapped before we could get the lock, and retry
 		 * if so.  If we locked the right context, then it
-		 * can't get swapped on us any more.
+		 * can't get swapped on us anymore.
 		 */
 		raw_spin_lock(&ctx->lock);
 		if (ctx != rcu_dereference(task->perf_event_ctxp)) {
@@ -1549,7 +1549,7 @@ get_event_groups(struct perf_event *event, struct perf_event_context *ctx)
 }
 
 /*
- * Helper function to initializes perf_event_group trees.
+ * Helper function to initialize perf_event_group trees.
  */
 static void perf_event_groups_init(struct perf_event_groups *groups)
 {
@@ -1782,7 +1782,7 @@ list_add_event(struct perf_event *event, struct perf_event_context *ctx)
 	event->tstamp = perf_event_time(event);
 
 	/*
-	 * If we're a stand alone event or group leader, we go to the context
+	 * If we're a stand-alone event or group leader, we go to the context
 	 * list, group events are kept attached to the group so that
 	 * perf_group_detach can, at all times, locate all siblings.
 	 */
@@ -2538,7 +2538,7 @@ event_sched_in(struct perf_event *event, struct perf_event_context *ctx)
 	/*
 	 * Unthrottle events, since we scheduled we might have missed several
 	 * ticks already, also for a heavily scheduling task there is little
-	 * guarantee it'll get a tick in a timely manner.
+	 * guarantee it'll get a tick on time.
 	 */
 	if (unlikely(event->hw.interrupts == MAX_INTERRUPTS)) {
 		perf_log_throttle(event, 1);
@@ -2687,7 +2687,7 @@ static void perf_event_sched_in(struct perf_cpu_context *cpuctx,
  *  - CPU flexible (EVENT_CPU | EVENT_FLEXIBLE)
  *  - task flexible (EVENT_FLEXIBLE).
  *
- * In order to avoid unscheduling and scheduling back in everything every
+ * To avoid unscheduling and scheduling back in everything every
  * time an event is added, only do it for the groups of equal priority and
  * below.
  *
@@ -2776,7 +2776,7 @@ static int  __perf_install_in_context(void *info)
 		 * If the task is running, it must be running on this CPU,
 		 * otherwise we cannot reprogram things.
 		 *
-		 * If its not running, we don't care, ctx->lock will
+		 * If it's not running, we don't care, ctx->lock will
 		 * serialize against it becoming runnable.
 		 */
 		if (task_curr(ctx->task) && !reprogram) {
@@ -2893,8 +2893,8 @@ perf_install_in_context(struct perf_event_context *ctx,
 	 * our task->perf_event_ctxp[] store, such that it will in fact take
 	 * ctx::lock in perf_event_context_sched_in().
 	 *
-	 * We do this by task_function_call(), if the IPI fails to hit the task
-	 * we know any future context switch of task must see the
+	 * We do this by task_function_call() if the IPI fails to hit the task
+	 * we know any future context switch of the task must see the
 	 * perf_event_ctpx[] store.
 	 */
 
@@ -3102,11 +3102,11 @@ static int perf_event_stop(struct perf_event *event, int restart)
 }
 
 /*
- * In order to contain the amount of racy and tricky in the address filter
+ * To contain the amount of racy and tricky in the address filter
  * configuration management, it is a two part process:
  *
  * (p1) when userspace mappings change as a result of (1) or (2) or (3) below,
- *      we update the addresses of corresponding vmas in
+ *      we update the addresses of corresponding VMAs in
  *	event::addr_filter_ranges array and bump the event::addr_filters_gen;
  * (p2) when an event is scheduled in (pmu::add), it calls
  *      perf_event_addr_filters_sync() which calls pmu::addr_filters_sync()
@@ -3397,7 +3397,7 @@ static void __perf_event_sync_stat(struct perf_event *event,
 	perf_event_update_time(event);
 
 	/*
-	 * In order to keep per-task stats reliable we need to flip the event
+	 * To keep per-task stats reliable we need to flip the event
 	 * values when we flip the contexts.
 	 */
 	value = local64_read(&next_event->count);
@@ -6731,7 +6731,7 @@ static void __perf_pending_irq(struct perf_event *event)
 	int cpu = READ_ONCE(event->oncpu);
 
 	/*
-	 * If the event isn't running; we done. event_sched_out() will have
+	 * If the event isn't running; we are done. event_sched_out() will have
 	 * taken care of things.
 	 */
 	if (cpu < 0)
@@ -13107,7 +13107,7 @@ static void perf_event_exit_task_context(struct task_struct *child)
 		return;
 
 	/*
-	 * In order to reduce the amount of tricky in ctx tear-down, we hold
+	 * To reduce the amount of tricky in ctx tear-down, we hold
 	 * ctx::mutex over the entire thing. This serializes against almost
 	 * everything that wants to access the ctx.
 	 *
@@ -13542,7 +13542,7 @@ static int perf_event_init_context(struct task_struct *child, u64 clone_flags)
 	mutex_lock(&parent_ctx->mutex);
 
 	/*
-	 * We dont have to disable NMIs - we are only looking at
+	 * We don't have to disable NMIs - we are only looking at
 	 * the list, not manipulating it:
 	 */
 	perf_event_groups_for_each(event, &parent_ctx->pinned_groups) {
